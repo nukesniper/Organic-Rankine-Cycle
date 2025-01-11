@@ -10,7 +10,7 @@ This app is designed to simulate and analyze the performance of an ORC.
 """)
 st.write("This application simulates the performance of an Organic Rankine Cycle on the secondary side of a microreactor based on your input data. The reference cycle is the following: ")
 # Ensure the path is properly formatted
-image_path = r"C:\Users\lucas\Downloads\Organic RAnkine Cycle Streamlit.png"
+image_path = "Organic RAnkine Cycle Streamlit.png"
 if not os.path.exists(image_path):
     st.error(f"Image file not found at: {image_path}")
 else:
