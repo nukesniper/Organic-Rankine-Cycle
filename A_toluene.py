@@ -21,6 +21,8 @@ import shutil
 # Detect paths dynamically
 chromedriver_path = shutil.which("chromedriver")
 chromium_path = shutil.which("chromium-browser")
+print(f"ChromeDriver path: {chromedriver_path}")
+print(f"Chromium path: {chromium_path}")
 
 if not chromedriver_path:
     raise FileNotFoundError("ChromeDriver not found. Ensure it is installed and in the PATH.")
