@@ -13,6 +13,7 @@ from selenium.webdriver.chrome.service import Service
 import time
 from bs4 import BeautifulSoup
 import shutil
+import os
 
 # Detect paths dynamically
 chromedriver_path = os.getenv("CHROMEDRIVER_PATH", shutil.which("chromedriver"))
