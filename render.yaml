@@ -3,15 +3,21 @@ services:
     name: Organic-Rankine-Cycle
     env: python
     buildCommand: |
-      apt-get update && apt-get install -y wget unzip curl
+      # Update the apt repository
+      apt-get update && apt-get install -y software-properties-common wget unzip curl
+      # Add the PPA for Chromium builds
+      add-apt-repository ppa:canonical-chromium-builds/stage -y
+      apt-get update
+      # Install Chromium and ChromeDriver
       apt-get install -y chromium-browser chromium-chromedriver
-      export CHROMEDRIVER_PATH=$(which chromedriver)
-      export CHROMIUM_PATH=$(which chromium-browser)
-      echo "ChromeDriver Path: $CHROMEDRIVER_PATH"
-      echo "Chromium Path: $CHROMIUM_PATH"
-      chromium-browser --version || echo "Chromium version not available"
+      # Verify installation
+      echo "ChromeDriver Path:" $(which chromedriver)
+      echo "Chromium Path:" $(which chromium-browser)
       chromedriver --version || echo "Chromedriver version not available"
+      chromium-browser --version || echo "Chromium version not available"
+      # Install Python dependencies
       pip install -r requirements.txt
     startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0
     region: oregon
     plan: free
+
