@@ -16,16 +16,16 @@ from plate_hx_correlation_calculator import get_heat_transfer_coefficients
 import shutil
 import os
 
-# Explicitly set ChromeDriver path
-chromedriver_path = os.getenv("CHROMEDRIVER_PATH", "/opt/render/project/src/chromedriver")
-chromium_path = shutil.which("chromium-browser")
+# Set paths explicitly
+chromedriver_path = "/opt/render/project/src/bin/chrome/chromedriver"
+chromium_path = "/opt/render/project/src/bin/chrome/google-chrome"
 
 print(f"Using ChromeDriver Path: {chromedriver_path}")
 print(f"Using Chromium Path: {chromium_path}")
 
-if not chromedriver_path:
+if not os.path.exists(chromedriver_path):
     raise FileNotFoundError("ChromeDriver not found. Ensure it is installed and in the PATH.")
-if not chromium_path:
+if not os.path.exists(chromium_path):
     raise FileNotFoundError("Chromium not found. Ensure it is installed and in the PATH.")
 
 # Configure Chrome options
