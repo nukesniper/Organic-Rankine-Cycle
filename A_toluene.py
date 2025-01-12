@@ -18,10 +18,15 @@ from shellandtube_calculator import calculate_area_s
 from plate_calculator import calculate_area_p
 import shutil
 
-# Locate ChromeDriver dynamically
+# Detect paths dynamically
 chromedriver_path = shutil.which("chromedriver")
+chromium_path = shutil.which("chromium-browser")
+
 if not chromedriver_path:
     raise FileNotFoundError("ChromeDriver not found. Ensure it is installed and in the PATH.")
+
+if not chromium_path:
+    raise FileNotFoundError("Chromium not found. Ensure it is installed and in the PATH.")
 
 # Configure Chrome options
 options = Options()
@@ -29,10 +34,9 @@ options.add_argument("--headless")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--disable-gpu")
-options.add_argument("--disable-software-rasterizer")
-options.binary_location = shutil.which("chromium-browser")  # Locate Chrome binary dynamically
+options.binary_location = chromium_path
 
-# Initialize WebDriver with dynamic ChromeDriver path
+# Initialize WebDriver
 service = Service(chromedriver_path)
 
 """
