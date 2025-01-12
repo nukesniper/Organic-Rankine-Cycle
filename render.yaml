@@ -2,16 +2,16 @@ services:
   - type: web
     name: Organic-Rankine-Cycle
     env: python
-    buildCommand: buildCommand: |
-    apt-get update && apt-get install -y wget unzip curl
-    apt-get install -y chromium-browser chromium-chromedriver
-    echo "ChromeDriver Path:"
-    which chromedriver
-    echo "Chromium Path:"
-    which chromium-browser
-    chromium-browser --version
-    chromedriver --version
-    pip install -r requirements.txt
+    buildCommand: |
+      apt-get update && apt-get install -y wget unzip curl
+      apt-get install -y chromium-browser chromium-chromedriver
+      echo "ChromeDriver Path:"
+      which chromedriver
+      echo "Chromium Path:"
+      which chromium-browser
+      chromium-browser --version
+      chromedriver --version
+      pip install -r requirements.txt
     startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0
     region: oregon
     plan: free
