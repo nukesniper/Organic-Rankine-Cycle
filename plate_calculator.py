@@ -14,6 +14,7 @@ import time
 from bs4 import BeautifulSoup
 from plate_hx_correlation_calculator import get_heat_transfer_coefficients
 import shutil
+import os
 
 # Detect paths dynamically
 chromedriver_path = os.getenv("CHROMEDRIVER_PATH", shutil.which("chromedriver"))
