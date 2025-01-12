@@ -9,19 +9,19 @@ services:
       # Create a writable directory for Chrome and ChromeDriver
       mkdir -p /opt/render/project/src/bin
 
-      # Download and install a specific version of Google Chrome
+      # Download and install Google Chrome 114
       wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /opt/render/project/src/bin/google-chrome-stable.deb
       dpkg-deb -x /opt/render/project/src/bin/google-chrome-stable.deb /opt/render/project/src/bin/google-chrome
 
-      # Override PATH to prioritize manually installed Chrome
-      export PATH="/opt/render/project/src/bin/google-chrome/opt/google/chrome:$PATH"
+      # Ensure the correct Chrome binary is used
       export CHROME_BINARY="/opt/render/project/src/bin/google-chrome/opt/google/chrome/google-chrome"
+      export PATH="/opt/render/project/src/bin/google-chrome/opt/google/chrome:$PATH"
 
       # Verify manually installed Google Chrome version
       echo "Verifying manually installed Google Chrome..."
       $CHROME_BINARY --version || { echo "Google Chrome installation failed."; exit 1; }
 
-      # Download and install a specific ChromeDriver version
+      # Download and install ChromeDriver 114
       CHROMEDRIVER_VERSION="114.0.5735.90"
       wget https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip -O /opt/render/project/src/bin/chromedriver_linux64.zip
       unzip /opt/render/project/src/bin/chromedriver_linux64.zip -d /opt/render/project/src/bin/
@@ -35,11 +35,11 @@ services:
       pip install -r requirements.txt
 
     startCommand: |
-      # Set PATH and Chrome binary path explicitly in runtime
-      export PATH="/opt/render/project/src/bin/google-chrome/opt/google/chrome:$PATH"
+      # Set environment variables explicitly
       export CHROME_BINARY="/opt/render/project/src/bin/google-chrome/opt/google/chrome/google-chrome"
+      export PATH="/opt/render/project/src/bin/google-chrome/opt/google/chrome:$PATH"
 
-      # Verify runtime Chrome and ChromeDriver installation
+      # Verify Chrome and ChromeDriver during runtime
       echo "Verifying runtime Chrome and ChromeDriver installation..."
       $CHROME_BINARY --version
       /opt/render/project/src/bin/chromedriver --version
