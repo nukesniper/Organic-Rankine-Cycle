@@ -19,27 +19,25 @@ from plate_calculator import calculate_area_p
 import shutil
 import os
 
-# Set paths explicitly
+# Set the paths to the manually installed Chrome binary and ChromeDriver
+chrome_binary = "/opt/render/project/src/bin/google-chrome/opt/google/chrome/google-chrome"
 chromedriver_path = "/opt/render/project/src/bin/chromedriver"
-chromium_path = "/usr/bin/google-chrome"
-
-print(f"Using ChromeDriver Path: {chromedriver_path}")
-print(f"Using Chromium Path: {chromium_path}")
-
-if not os.path.exists(chromedriver_path):
-    raise FileNotFoundError("ChromeDriver not found. Ensure it is installed and in the PATH.")
-if not os.path.exists(chromium_path):
-    raise FileNotFoundError("Chromium not found. Ensure it is installed and in the PATH.")
 
 # Configure Chrome options
 options = Options()
+options.binary_location = chrome_binary
 options.add_argument("--headless")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
-options.binary_location = chromium_path
 
-# Initialize WebDriver
+# Initialize WebDriver with the correct paths
 service = Service(chromedriver_path)
+driver = webdriver.Chrome(service=service, options=options)
+
+# Test the WebDriver
+driver.get("https://www.google.com")
+print(driver.title)
+driver.quit()
 
 """
 # Initial variables definition
@@ -133,9 +131,6 @@ def toluene_orc(pressure_loss, p2, T1, T4,
     Link1 = "https://webbook.nist.gov/cgi/fluid.cgi?TUnit=C&PUnit=bar&DUnit=mol%2Fl&HUnit=kJ%2Fkg&WUnit=m%2Fs&VisUnit=Pa*s&STUnit=N%2Fm&Type=IsoTherm&RefState=DEF&Action=Page&ID=C108883"
     Link2 = "https://webbook.nist.gov/cgi/fluid.cgi?ID=C108883&TUnit=C&PUnit=bar&DUnit=mol%2Fl&HUnit=kJ%2Fkg&WUnit=m%2Fs&VisUnit=Pa*s&STUnit=N%2Fm&Type=IsoBar&RefState=DEF&Action=Page"
 
-    # Set up the Selenium WebDriver in headless mode
-    driver = webdriver.Chrome(service=service, options=options)
-
     # Open the NIST Fluid Properties web page
     driver.get(Link1)
 
@@ -187,8 +182,6 @@ def toluene_orc(pressure_loss, p2, T1, T4,
     s2is = s1
 
     # Set up the driver again to calculate properties at point 2
-    ddriver = webdriver.Chrome(service=service, options=options)
-
     # Open the NIST Fluid Properties web page
     driver.get(Link2)
 
@@ -245,8 +238,6 @@ def toluene_orc(pressure_loss, p2, T1, T4,
     h2 = h1 + (h2is - h1) / pump_isentropic_efficiency
 
     # Set up the driver again to calculate properties at point 4
-    driver = webdriver.Chrome(service=service, options=options)
-
     # Open the NIST Fluid Properties web page
     driver.get(Link2)
 
@@ -310,8 +301,6 @@ def toluene_orc(pressure_loss, p2, T1, T4,
     saturation_temperature = data_T_evap[i]
 
     # Set up the driver again to calculate properties at point 5
-    driver = webdriver.Chrome(service=service, options=options)
-
     # Open the NIST Fluid Properties web page
     driver.get(Link2)
 
@@ -397,8 +386,6 @@ def toluene_orc(pressure_loss, p2, T1, T4,
     h3 = h5 - h6 + h2
 
     # Set up the driver again to calculate properties at point 3
-    driver = webdriver.Chrome(service=service, options=options)
-
     # Open the NIST Fluid Properties web page
     driver.get(Link2)
 
