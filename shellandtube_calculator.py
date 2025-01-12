@@ -15,27 +15,25 @@ from bs4 import BeautifulSoup
 import shutil
 import os
 
-# Set paths explicitly
+# Set the paths to the manually installed Chrome binary and ChromeDriver
+chrome_binary = "/opt/render/project/src/bin/google-chrome/opt/google/chrome/google-chrome"
 chromedriver_path = "/opt/render/project/src/bin/chromedriver"
-chromium_path = "/usr/bin/google-chrome"
-
-print(f"Using ChromeDriver Path: {chromedriver_path}")
-print(f"Using Chromium Path: {chromium_path}")
-
-if not os.path.exists(chromedriver_path):
-    raise FileNotFoundError("ChromeDriver not found. Ensure it is installed and in the PATH.")
-if not os.path.exists(chromium_path):
-    raise FileNotFoundError("Chromium not found. Ensure it is installed and in the PATH.")
 
 # Configure Chrome options
 options = Options()
+options.binary_location = chrome_binary
 options.add_argument("--headless")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
-options.binary_location = chromium_path
 
-# Initialize WebDriver
+# Initialize WebDriver with the correct paths
 service = Service(chromedriver_path)
+driver = webdriver.Chrome(service=service, options=options)
+
+# Test the WebDriver
+driver.get("https://www.google.com")
+print(driver.title)
+driver.quit()
 
 def calculate_area_s(D_t, D_s, N_t, N_p, P_T, C, B, k_SS, Model,
                    saturation_temperature, p2, T3, T4, T1st, T2st,
@@ -44,10 +42,6 @@ def calculate_area_s(D_t, D_s, N_t, N_p, P_T, C, B, k_SS, Model,
 
     saturation_enthalpy_l = saturation_enthalpy_l * 1000
     saturation_enthalpy_g = saturation_enthalpy_g * 1000
-
-    # Set up the Selenium WebDriver in headless mode
-    # Initialize the driver
-    driver = webdriver.Chrome(service=service, options=options)
 
     # Open the NIST Fluid Properties web page
     driver.get(Link)
@@ -146,9 +140,6 @@ def calculate_area_s(D_t, D_s, N_t, N_p, P_T, C, B, k_SS, Model,
     cold_gas_temperatures = m_g * cold_gas_Q + c_g
     cold_saturation_temperatures = np.full(Model, saturation_temperature)
     cold_saturation_Q = np.linspace(saturation_enthalpy_l, saturation_enthalpy_g, Model)
-
-    # Initialize the driver
-    driver = webdriver.Chrome(service=service, options=options)
 
     # Open the NIST Fluid Properties web page for water
     driver.get("https://webbook.nist.gov/cgi/fluid.cgi?ID=C7732185&TUnit=C&PUnit=bar&DUnit=mol%2Fl&HUnit=kJ%2Fkg&WUnit=m%2Fs&VisUnit=Pa*s&STUnit=N%2Fm&Type=IsoBar&RefState=DEF&Action=Page")
