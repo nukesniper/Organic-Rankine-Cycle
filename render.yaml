@@ -2,18 +2,25 @@ services:
   - type: web
     name: Organic-Rankine-Cycle
     env: python
-    buildCommand: |
+   buildCommand: |
     # Install wget and unzip
-    apt-get update && apt-get install -y wget unzip curl || true
-    # Download and install the latest ChromeDriver
+    apt-get update || true
+    apt-get install -y wget unzip curl || true
+    # Manually download Chromium and ChromeDriver
+    mkdir -p /opt/render/project/src/bin
+    # Download the latest Chromium
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /tmp/chrome.deb
+    dpkg -x /tmp/chrome.deb /opt/render/project/src/bin
+    mv /opt/render/project/src/bin/opt/google/chrome /opt/render/project/src/bin/chrome
+    # Download the latest ChromeDriver
     CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-    wget -q https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip -O /tmp/chromedriver.zip
-    unzip /tmp/chromedriver.zip -d /opt/render/project/src/
-    chmod +x /opt/render/project/src/chromedriver
-    echo "ChromeDriver installed at /opt/render/project/src/chromedriver"
-    # Install Chromium manually if necessary
-    apt-get install -y chromium-browser || echo "Chromium install skipped"
-    echo "PATH=$PATH:/opt/render/project/src/" >> /opt/render/.env
+    wget https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip -O /tmp/chromedriver.zip
+    unzip /tmp/chromedriver.zip -d /opt/render/project/src/bin/chrome
+    chmod +x /opt/render/project/src/bin/chrome/chromedriver
+    # Export paths
+    echo "PATH=$PATH:/opt/render/project/src/bin/chrome" >> /opt/render/.env
+    echo "Chromium installed at /opt/render/project/src/bin/chrome"
+    echo "ChromeDriver installed at /opt/render/project/src/bin/chrome/chromedriver"
     # Install Python dependencies
     pip install -r requirements.txt
     startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0
