@@ -13,7 +13,8 @@ services:
       wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /opt/render/project/src/bin/google-chrome-stable.deb
       dpkg-deb -x /opt/render/project/src/bin/google-chrome-stable.deb /opt/render/project/src/bin/google-chrome
 
-      # Ensure the manually installed Google Chrome binary is used
+      # Override PATH to prioritize manually installed Chrome
+      export PATH="/opt/render/project/src/bin/google-chrome/opt/google/chrome:$PATH"
       export CHROME_BINARY="/opt/render/project/src/bin/google-chrome/opt/google/chrome/google-chrome"
 
       # Verify manually installed Google Chrome version
@@ -34,10 +35,11 @@ services:
       pip install -r requirements.txt
 
     startCommand: |
-      # Set Chrome binary path explicitly in runtime
+      # Set PATH and Chrome binary path explicitly in runtime
+      export PATH="/opt/render/project/src/bin/google-chrome/opt/google/chrome:$PATH"
       export CHROME_BINARY="/opt/render/project/src/bin/google-chrome/opt/google/chrome/google-chrome"
 
-      # Verify Chrome and ChromeDriver versions during runtime
+      # Verify runtime Chrome and ChromeDriver installation
       echo "Verifying runtime Chrome and ChromeDriver installation..."
       $CHROME_BINARY --version
       /opt/render/project/src/bin/chromedriver --version
