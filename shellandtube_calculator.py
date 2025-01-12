@@ -15,25 +15,29 @@ from bs4 import BeautifulSoup
 import shutil
 import os
 
-# Set the paths to the manually installed Chrome binary and ChromeDriver
-chrome_binary = "/opt/render/project/src/bin/google-chrome/opt/google/chrome/google-chrome"
+# Path to manually installed Chrome binary
+chrome_binary_path = "/opt/render/project/src/bin/google-chrome/opt/google/chrome/google-chrome"
+# Path to ChromeDriver
 chromedriver_path = "/opt/render/project/src/bin/chromedriver"
 
 # Configure Chrome options
 options = Options()
-options.binary_location = chrome_binary
-options.add_argument("--headless")
-options.add_argument("--no-sandbox")
-options.add_argument("--disable-dev-shm-usage")
+options.binary_location = chrome_binary_path  # Explicitly use the manually installed Chrome binary
+options.add_argument("--headless")  # Run in headless mode
+options.add_argument("--no-sandbox")  # Required for environments like Render
+options.add_argument("--disable-dev-shm-usage")  # Prevent shared memory issues
 
-# Initialize WebDriver with the correct paths
+# Create a Service object for ChromeDriver
 service = Service(chromedriver_path)
-driver = webdriver.Chrome(service=service, options=options)
 
-# Test the WebDriver
-driver.get("https://www.google.com")
-print(driver.title)
-driver.quit()
+# Start the WebDriver
+try:
+    driver = webdriver.Chrome(service=service, options=options)
+    driver.get("https://www.google.com")
+    print("Page title is:", driver.title)
+    driver.quit()
+except Exception as e:
+    print(f"Error initializing WebDriver: {e}")
 
 def calculate_area_s(D_t, D_s, N_t, N_p, P_T, C, B, k_SS, Model,
                    saturation_temperature, p2, T3, T4, T1st, T2st,
