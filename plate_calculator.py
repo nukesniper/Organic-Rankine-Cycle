@@ -13,16 +13,18 @@ from selenium.webdriver.chrome.service import Service
 import time
 from bs4 import BeautifulSoup
 from plate_hx_correlation_calculator import get_heat_transfer_coefficients
+import shutil
 
 # Configure Chrome options
 options = Options()
-options.add_argument("--headless")  # Run in headless mode
-options.add_argument("--no-sandbox")  # Required in server environments
-options.add_argument("--disable-dev-shm-usage")  # Prevent shared memory issues
-options.add_argument("--disable-gpu")  # Disable GPU rendering
-options.add_argument("--disable-software-rasterizer")  # Use CPU rendering
+options.add_argument("--headless")
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-dev-shm-usage")
+options.add_argument("--disable-gpu")
+options.add_argument("--disable-software-rasterizer")
+options.binary_location = "/usr/bin/chromium-browser"  # Explicitly set Chrome binary
 
-# Specify ChromeDriver path explicitly
+# Path to ChromeDriver
 service = Service("/usr/bin/chromedriver")
 
 def calculate_area_p(
