@@ -9,20 +9,22 @@ services:
       # Create a writable directory for Chrome and ChromeDriver
       mkdir -p /opt/render/project/src/bin
 
-      # Download portable Google Chrome binary (Linux stable version)
-      wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.tar.gz -O /opt/render/project/src/bin/google-chrome.tar.gz
-      tar -xvzf /opt/render/project/src/bin/google-chrome.tar.gz -C /opt/render/project/src/bin/
-      export PATH=/opt/render/project/src/bin/google-chrome:$PATH
+      # Download a stable portable Google Chrome binary
+      wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /opt/render/project/src/bin/google-chrome-stable.deb
+      dpkg-deb -x /opt/render/project/src/bin/google-chrome-stable.deb /opt/render/project/src/bin/google-chrome
+      export PATH=/opt/render/project/src/bin/google-chrome/opt/google/chrome:$PATH
 
-      # Download matching ChromeDriver version
+      # Verify manually installed Google Chrome version
+      echo "Verifying Google Chrome installation..."
+      /opt/render/project/src/bin/google-chrome/opt/google/chrome/google-chrome --version || { echo "Google Chrome installation failed."; exit 1; }
+
+      # Download and install ChromeDriver (matching version)
       CHROMEDRIVER_VERSION="114.0.5735.90"
       wget https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip -O /opt/render/project/src/bin/chromedriver_linux64.zip
       unzip /opt/render/project/src/bin/chromedriver_linux64.zip -d /opt/render/project/src/bin/
       chmod +x /opt/render/project/src/bin/chromedriver
 
-      # Verify installation of Chrome and ChromeDriver
-      echo "Verifying Google Chrome installation..."
-      /opt/render/project/src/bin/google-chrome/google-chrome --version || { echo "Google Chrome installation failed."; exit 1; }
+      # Verify ChromeDriver installation
       echo "Verifying ChromeDriver installation..."
       /opt/render/project/src/bin/chromedriver --version || { echo "ChromeDriver installation failed."; exit 1; }
 
@@ -32,7 +34,7 @@ services:
     startCommand: |
       # Verify Chrome and ChromeDriver during runtime
       echo "Verifying runtime Chrome and ChromeDriver installation..."
-      /opt/render/project/src/bin/google-chrome/google-chrome --version
+      /opt/render/project/src/bin/google-chrome/opt/google/chrome/google-chrome --version
       /opt/render/project/src/bin/chromedriver --version
 
       # Start the Streamlit application
