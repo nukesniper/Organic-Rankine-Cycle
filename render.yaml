@@ -3,12 +3,13 @@ services:
     name: Organic-Rankine-Cycle
     env: python
     buildCommand: |
-      # Update and install Chrome via apt
+      # Update and install dependencies
       apt-get update && apt-get install -y wget unzip curl google-chrome-stable
-      # Download a specific ChromeDriver version
+      # Download and install ChromeDriver into a writable directory
+      mkdir -p /opt/render/project/src/bin
       wget https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip
-      unzip chromedriver_linux64.zip -d /usr/local/bin/
-      chmod +x /usr/local/bin/chromedriver
+      unzip chromedriver_linux64.zip -d /opt/render/project/src/bin/
+      chmod +x /opt/render/project/src/bin/chromedriver
     startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0
     region: oregon
     plan: free
