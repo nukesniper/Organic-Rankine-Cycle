@@ -3,14 +3,35 @@ services:
     name: Organic-Rankine-Cycle
     env: python
     buildCommand: |
+      # Update and install dependencies
       apt-get update && apt-get install -y wget unzip curl google-chrome-stable
+      
+      # Determine Google Chrome version
+      CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+' | head -n1)
+      echo "Installed Google Chrome version: $CHROME_VERSION"
+
+      # Fetch matching ChromeDriver version
+      CHROMEDRIVER_VERSION=$(curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
+      echo "Matching ChromeDriver version: $CHROMEDRIVER_VERSION"
+
+      # Download and install ChromeDriver
       mkdir -p /opt/render/project/src/bin
-      wget https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip
+      wget https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
       unzip chromedriver_linux64.zip -d /opt/render/project/src/bin/
       chmod +x /opt/render/project/src/bin/chromedriver
+      
+      # Install Python dependencies
       pip install -r requirements.txt
-      pip list
-    startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0
+
+    startCommand: |
+      # Verify Chrome and ChromeDriver installation
+      echo "Verifying Chrome and ChromeDriver installation..."
+      google-chrome --version
+      /opt/render/project/src/bin/chromedriver --version
+      
+      # Start the Streamlit application
+      streamlit run app.py --server.port $PORT --server.address 0.0.0.0
+
     envVars:
       - key: PYTHON_VERSION
         value: "3.11.11"
