@@ -19,6 +19,9 @@ import shutil
 chromedriver_path = shutil.which("chromedriver")
 chromium_path = shutil.which("chromium-browser")
 
+print(f"ChromeDriver path: {chromedriver_path}")
+print(f"Chromium path: {chromium_path}")
+
 if not chromedriver_path:
     raise FileNotFoundError("ChromeDriver not found. Ensure it is installed and in the PATH.")
 
@@ -30,7 +33,6 @@ options = Options()
 options.add_argument("--headless")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
-options.add_argument("--disable-gpu")
 options.binary_location = chromium_path
 
 # Initialize WebDriver
