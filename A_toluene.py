@@ -17,6 +17,7 @@ from turbine_efficiency_calculator import get_best_efficiency
 from shellandtube_calculator import calculate_area_s
 from plate_calculator import calculate_area_p
 import shutil
+import os
 
 # Detect paths dynamically
 chromedriver_path = os.getenv("CHROMEDRIVER_PATH", shutil.which("chromedriver"))
