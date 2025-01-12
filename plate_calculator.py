@@ -16,8 +16,8 @@ from plate_hx_correlation_calculator import get_heat_transfer_coefficients
 import shutil
 
 # Detect paths dynamically
-chromedriver_path = shutil.which("chromedriver")
-chromium_path = shutil.which("chromium-browser")
+chromedriver_path = os.getenv("CHROMEDRIVER_PATH", shutil.which("chromedriver"))
+chromium_path = os.getenv("CHROMIUM_PATH", shutil.which("chromium-browser"))
 
 print(f"ChromeDriver path: {chromedriver_path}")
 print(f"Chromium path: {chromium_path}")
