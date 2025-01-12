@@ -17,7 +17,7 @@ import shutil
 import os
 
 # Set paths explicitly
-chromedriver_path = "/usr/local/bin/chromedriver"
+chromedriver_path = "/opt/render/project/src/bin/chromedriver"
 chromium_path = "/usr/bin/google-chrome"
 
 print(f"Using ChromeDriver Path: {chromedriver_path}")
