@@ -9,9 +9,21 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.service import Service
 import time
 from bs4 import BeautifulSoup
 from plate_hx_correlation_calculator import get_heat_transfer_coefficients
+
+# Configure Chrome options
+options = Options()
+options.add_argument("--headless")
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-dev-shm-usage")
+options.add_argument("--disable-gpu")
+options.add_argument("--disable-software-rasterizer")
+
+# Path to ChromeDriver
+service = Service("/usr/bin/chromedriver")
 
 def calculate_area_p(
     L, W, t, Dp, Lv, Lh, lambda_, beta, Lc, Phi, k_SS, N_t, N_p, Model,
@@ -20,10 +32,8 @@ def calculate_area_p(
     saturation_enthalpy_l = saturation_enthalpy_l * 1000
     saturation_enthalpy_g = saturation_enthalpy_g * 1000
 
-    # Set up the Selenium WebDriver in headless mode
-    options = Options()
-    options.headless = True
-    driver = webdriver.Chrome(options=options)
+    # Initialize the driver
+    driver = webdriver.Chrome(service=service, options=options)
 
     # Open the NIST Fluid Properties web page
     driver.get(Link)
@@ -120,7 +130,8 @@ def calculate_area_p(
     cold_saturation_temperatures = np.full(Model, saturation_temperature)
     cold_saturation_Q = np.linspace(saturation_enthalpy_l, saturation_enthalpy_g, Model)
 
-    driver = webdriver.Chrome(options=options)
+    # Initialize the driver
+    driver = webdriver.Chrome(service=service, options=options)
 
     # Open the NIST Fluid Properties web page for water
     driver.get(
