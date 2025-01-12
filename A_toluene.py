@@ -19,16 +19,15 @@ from plate_calculator import calculate_area_p
 import shutil
 import os
 
-# Detect paths dynamically
-chromedriver_path = os.getenv("CHROMEDRIVER_PATH", shutil.which("chromedriver"))
-chromium_path = os.getenv("CHROMIUM_PATH", shutil.which("chromium-browser"))
+# Explicitly set ChromeDriver path
+chromedriver_path = os.getenv("CHROMEDRIVER_PATH", "/opt/render/project/src/chromedriver")
+chromium_path = shutil.which("chromium-browser")
 
-print(f"ChromeDriver path: {chromedriver_path}")
-print(f"Chromium path: {chromium_path}")
+print(f"Using ChromeDriver Path: {chromedriver_path}")
+print(f"Using Chromium Path: {chromium_path}")
 
 if not chromedriver_path:
     raise FileNotFoundError("ChromeDriver not found. Ensure it is installed and in the PATH.")
-
 if not chromium_path:
     raise FileNotFoundError("Chromium not found. Ensure it is installed and in the PATH.")
 
