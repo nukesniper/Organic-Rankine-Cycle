@@ -9,16 +9,18 @@ services:
       # Create a writable directory for Chrome and ChromeDriver
       mkdir -p /opt/render/project/src/bin
 
-      # Download a stable portable Google Chrome binary
+      # Download and install a specific version of Google Chrome
       wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /opt/render/project/src/bin/google-chrome-stable.deb
       dpkg-deb -x /opt/render/project/src/bin/google-chrome-stable.deb /opt/render/project/src/bin/google-chrome
-      export PATH=/opt/render/project/src/bin/google-chrome/opt/google/chrome:$PATH
+
+      # Ensure the manually installed Google Chrome binary is used
+      export CHROME_BINARY="/opt/render/project/src/bin/google-chrome/opt/google/chrome/google-chrome"
 
       # Verify manually installed Google Chrome version
-      echo "Verifying Google Chrome installation..."
-      /opt/render/project/src/bin/google-chrome/opt/google/chrome/google-chrome --version || { echo "Google Chrome installation failed."; exit 1; }
+      echo "Verifying manually installed Google Chrome..."
+      $CHROME_BINARY --version || { echo "Google Chrome installation failed."; exit 1; }
 
-      # Download and install ChromeDriver (matching version)
+      # Download and install a specific ChromeDriver version
       CHROMEDRIVER_VERSION="114.0.5735.90"
       wget https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip -O /opt/render/project/src/bin/chromedriver_linux64.zip
       unzip /opt/render/project/src/bin/chromedriver_linux64.zip -d /opt/render/project/src/bin/
@@ -32,9 +34,12 @@ services:
       pip install -r requirements.txt
 
     startCommand: |
-      # Verify Chrome and ChromeDriver during runtime
+      # Set Chrome binary path explicitly in runtime
+      export CHROME_BINARY="/opt/render/project/src/bin/google-chrome/opt/google/chrome/google-chrome"
+
+      # Verify Chrome and ChromeDriver versions during runtime
       echo "Verifying runtime Chrome and ChromeDriver installation..."
-      /opt/render/project/src/bin/google-chrome/opt/google/chrome/google-chrome --version
+      $CHROME_BINARY --version
       /opt/render/project/src/bin/chromedriver --version
 
       # Start the Streamlit application
