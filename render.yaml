@@ -5,10 +5,10 @@ services:
     buildCommand: |
       apt-get update && apt-get install -y wget unzip curl
       apt-get install -y chromium-browser chromium-chromedriver
-      echo "ChromeDriver Path:"
-      which chromedriver || echo "Chromedriver not found"
-      echo "Chromium Path:"
-      which chromium-browser || echo "Chromium not found"
+      export CHROMEDRIVER_PATH=$(which chromedriver)
+      export CHROMIUM_PATH=$(which chromium-browser)
+      echo "ChromeDriver Path: $CHROMEDRIVER_PATH"
+      echo "Chromium Path: $CHROMIUM_PATH"
       chromium-browser --version || echo "Chromium version not available"
       chromedriver --version || echo "Chromedriver version not available"
       pip install -r requirements.txt
