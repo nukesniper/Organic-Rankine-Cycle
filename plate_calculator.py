@@ -15,6 +15,11 @@ from bs4 import BeautifulSoup
 from plate_hx_correlation_calculator import get_heat_transfer_coefficients
 import shutil
 
+# Locate ChromeDriver dynamically
+chromedriver_path = shutil.which("chromedriver")
+if not chromedriver_path:
+    raise FileNotFoundError("ChromeDriver not found. Ensure it is installed and in the PATH.")
+
 # Configure Chrome options
 options = Options()
 options.add_argument("--headless")
@@ -22,10 +27,10 @@ options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--disable-gpu")
 options.add_argument("--disable-software-rasterizer")
-options.binary_location = "/usr/bin/chromium-browser"  # Explicitly set Chrome binary
+options.binary_location = shutil.which("chromium-browser")  # Locate Chrome binary dynamically
 
-# Path to ChromeDriver
-service = Service("/usr/bin/chromedriver")
+# Initialize WebDriver with dynamic ChromeDriver path
+service = Service(chromedriver_path)
 
 def calculate_area_p(
     L, W, t, Dp, Lv, Lh, lambda_, beta, Lc, Phi, k_SS, N_t, N_p, Model,
