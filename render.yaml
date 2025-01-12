@@ -3,30 +3,10 @@ services:
     name: Organic-Rankine-Cycle
     env: python
     buildCommand: |
-    # Create directories for manual installation
-    mkdir -p /opt/render/project/src/bin
-  
-    # Download Chromium (Standalone)
-    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /tmp/chrome.deb
-    dpkg -x /tmp/chrome.deb /opt/render/project/src/bin
-    mv /opt/render/project/src/bin/opt/google/chrome /opt/render/project/src/bin/chrome
-  
-    # Download ChromeDriver
-    CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-    wget https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip -O /tmp/chromedriver.zip
-    unzip /tmp/chromedriver.zip -d /opt/render/project/src/bin/chrome
-    chmod +x /opt/render/project/src/bin/chrome/chromedriver
-  
-    # Update PATH
-    echo "PATH=/opt/render/project/src/bin/chrome:$PATH" >> /opt/render/.env
-  
-    # Verify installation
-    /opt/render/project/src/bin/chrome/google-chrome --version || echo "Chromium version not available"
-    /opt/render/project/src/bin/chrome/chromedriver --version || echo "ChromeDriver version not available"
-  
+    # Install Chrome and ChromeDriver
+    apt-get update && apt-get install -y wget unzip curl chromium-browser chromium-chromedriver
     # Install Python dependencies
     pip install -r requirements.txt
-
     startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0
     region: oregon
     plan: free
