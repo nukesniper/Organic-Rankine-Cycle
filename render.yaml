@@ -3,15 +3,23 @@ services:
     name: Organic-Rankine-Cycle
     env: python
     buildCommand: |
-      # Update and install dependencies
-      apt-get update && apt-get install -y wget unzip curl google-chrome-stable
-      
-      # Determine Google Chrome version
+      # Install Google Chrome
+      wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+      apt-get update
+      apt-get install -y ./google-chrome-stable_current_amd64.deb || apt-get install -y -f
+
+      # Verify Chrome installation
+      echo "Verifying Google Chrome installation..."
+      google-chrome --version || { echo "Google Chrome not installed correctly."; exit 1; }
+
+      # Fetch ChromeDriver version
       CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+' | head -n1)
       echo "Installed Google Chrome version: $CHROME_VERSION"
-
-      # Fetch matching ChromeDriver version
       CHROMEDRIVER_VERSION=$(curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
+      if [ -z "$CHROMEDRIVER_VERSION" ]; then
+        echo "Failed to fetch ChromeDriver version for Chrome version $CHROME_VERSION."
+        exit 1
+      fi
       echo "Matching ChromeDriver version: $CHROMEDRIVER_VERSION"
 
       # Download and install ChromeDriver
@@ -19,18 +27,19 @@ services:
       wget https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
       unzip chromedriver_linux64.zip -d /opt/render/project/src/bin/
       chmod +x /opt/render/project/src/bin/chromedriver
-      
+
       # Install Python dependencies
       pip install -r requirements.txt
 
     startCommand: |
-      # Verify Chrome and ChromeDriver installation
+      # Verify Chrome and ChromeDriver versions
       echo "Verifying Chrome and ChromeDriver installation..."
       google-chrome --version
       /opt/render/project/src/bin/chromedriver --version
-      
+
       # Start the Streamlit application
       streamlit run app.py --server.port $PORT --server.address 0.0.0.0
+
 
     envVars:
       - key: PYTHON_VERSION
