@@ -16,16 +16,18 @@ from bs4 import BeautifulSoup
 from turbine_efficiency_calculator import get_best_efficiency
 from shellandtube_calculator import calculate_area_s
 from plate_calculator import calculate_area_p
+import shutil
 
 # Configure Chrome options
 options = Options()
-options.add_argument("--headless")  # Run in headless mode
-options.add_argument("--no-sandbox")  # Required for server environments
-options.add_argument("--disable-dev-shm-usage")  # Overcome resource limitations
-options.add_argument("--disable-gpu")  # Disable GPU rendering
-options.add_argument("--disable-software-rasterizer")  # Use CPU for rendering
+options.add_argument("--headless")
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-dev-shm-usage")
+options.add_argument("--disable-gpu")
+options.add_argument("--disable-software-rasterizer")
+options.binary_location = "/usr/bin/chromium-browser"  # Explicitly set Chrome binary
 
-# Path to ChromeDriver (ensure it's installed in Render)
+# Path to ChromeDriver
 service = Service("/usr/bin/chromedriver")
 
 """
