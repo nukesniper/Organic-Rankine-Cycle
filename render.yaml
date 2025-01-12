@@ -6,31 +6,20 @@ services:
       # Install dependencies
       apt-get update && apt-get install -y wget unzip curl
 
-      # Create a writable directory for Chrome
+      # Create a writable directory for Chrome and ChromeDriver
       mkdir -p /opt/render/project/src/bin
 
-      # Download and extract Chrome
+      # Download and extract a fixed version of Google Chrome
       wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /opt/render/project/src/bin/google-chrome-stable_current_amd64.deb
       dpkg-deb -x /opt/render/project/src/bin/google-chrome-stable_current_amd64.deb /opt/render/project/src/bin/google-chrome
       export PATH=/opt/render/project/src/bin/google-chrome/opt/google/chrome:$PATH
 
-      # Verify Chrome installation
+      # Verify Google Chrome installation
       echo "Verifying Google Chrome installation..."
       /opt/render/project/src/bin/google-chrome/opt/google/chrome/google-chrome --version || { echo "Google Chrome not installed correctly."; exit 1; }
 
-      # Extract only the major version of Chrome
-      CHROME_VERSION=$(/opt/render/project/src/bin/google-chrome/opt/google/chrome/google-chrome --version | grep -oP '\d+' | head -n1)
-      echo "Installed Google Chrome major version: $CHROME_VERSION"
-
-      # Fetch ChromeDriver version
-      CHROMEDRIVER_VERSION=$(curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
-      if [ -z "$CHROMEDRIVER_VERSION" ]; then
-        echo "Failed to fetch ChromeDriver version for Chrome major version $CHROME_VERSION."
-        exit 1
-      fi
-      echo "Matching ChromeDriver version: $CHROMEDRIVER_VERSION"
-
-      # Download and install ChromeDriver
+      # Use a fixed ChromeDriver version compatible with the downloaded Chrome
+      CHROMEDRIVER_VERSION="114.0.5735.90"
       wget https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip -O /opt/render/project/src/bin/chromedriver_linux64.zip
       unzip /opt/render/project/src/bin/chromedriver_linux64.zip -d /opt/render/project/src/bin/
       chmod +x /opt/render/project/src/bin/chromedriver
