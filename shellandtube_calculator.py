@@ -12,6 +12,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 import time
 from bs4 import BeautifulSoup
+import shutil
 
 # Configure Chrome options
 options = Options()
@@ -20,6 +21,7 @@ options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--disable-gpu")
 options.add_argument("--disable-software-rasterizer")
+options.binary_location = "/usr/bin/chromium-browser"  # Explicitly set Chrome binary
 
 # Path to ChromeDriver
 service = Service("/usr/bin/chromedriver")
