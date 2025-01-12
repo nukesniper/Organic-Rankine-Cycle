@@ -3,10 +3,14 @@ services:
     name: Organic-Rankine-Cycle
     env: python
     buildCommand: |
-      # Install Google Chrome
-      wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-      apt-get update
-      apt-get install -y ./google-chrome-stable_current_amd64.deb || apt-get install -y -f
+      # Install dependencies for Chrome and ChromeDriver
+      apt-get update && apt-get install -y wget unzip curl
+
+      # Download and install Chrome directly without dpkg
+      wget -O /tmp/google-chrome-stable_current_amd64.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+      mkdir -p /opt/google/chrome
+      dpkg-deb -x /tmp/google-chrome-stable_current_amd64.deb /opt/google/chrome
+      ln -s /opt/google/chrome/opt/google/chrome/google-chrome /usr/bin/google-chrome
 
       # Verify Chrome installation
       echo "Verifying Google Chrome installation..."
@@ -39,7 +43,6 @@ services:
 
       # Start the Streamlit application
       streamlit run app.py --server.port $PORT --server.address 0.0.0.0
-
 
     envVars:
       - key: PYTHON_VERSION
