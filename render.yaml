@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: Organic-Rankine-Cycle
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py
+    region: oregon
+    plan: free
