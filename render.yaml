@@ -4,7 +4,7 @@ services:
     env: python
     buildCommand: |
       # Install dependencies
-      apt-get update && apt-get install -y wget unzip curl xz-utils
+      apt-get update && apt-get install -y wget unzip curl xz-utils binutils
 
       # Create a writable directory for Chrome and ChromeDriver
       mkdir -p /opt/render/project/src/bin
@@ -12,11 +12,24 @@ services:
       # Download Google Chrome .deb file
       wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /opt/render/project/src/bin/google-chrome-stable.deb
 
-      # Manually extract the .deb file
-      ar x /opt/render/project/src/bin/google-chrome-stable.deb -C /opt/render/project/src/bin/
-      tar -xvf /opt/render/project/src/bin/data.tar.xz -C /opt/render/project/src/bin/
+      # Inspect the .deb file contents for debugging
+      echo "Inspecting the downloaded Google Chrome .deb file..."
+      ar t /opt/render/project/src/bin/google-chrome-stable.deb || { echo "Failed to inspect .deb file."; exit 1; }
 
-      # Debug: Check the extracted directory structure
+      # Extract the .deb file
+      ar x /opt/render/project/src/bin/google-chrome-stable.deb -C /opt/render/project/src/bin/
+      echo "Contents of /opt/render/project/src/bin after extraction:"
+      ls -l /opt/render/project/src/bin/
+
+      # Extract data.tar.xz if it exists
+      if [ -f /opt/render/project/src/bin/data.tar.xz ]; then
+        tar -xvf /opt/render/project/src/bin/data.tar.xz -C /opt/render/project/src/bin/
+      else
+        echo "Error: data.tar.xz not found in the .deb file."
+        exit 1
+      fi
+
+      # Debug: Verify extracted directory structure
       echo "Checking extracted Google Chrome structure..."
       ls -l /opt/render/project/src/bin/
 
