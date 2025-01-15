@@ -4,19 +4,26 @@ services:
     env: python
     buildCommand: |
       # Install dependencies
-      apt-get update && apt-get install -y wget unzip curl
+      apt-get update && apt-get install -y wget unzip curl xz-utils
 
       # Create a writable directory for Chrome and ChromeDriver
       mkdir -p /opt/render/project/src/bin
 
-      # Download and extract Google Chrome using a valid .deb file
+      # Download Google Chrome .deb file
       wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /opt/render/project/src/bin/google-chrome-stable.deb
-      ar x /opt/render/project/src/bin/google-chrome-stable.deb --output /opt/render/project/src/bin
-      tar -xvf /opt/render/project/src/bin/data.tar.xz -C /opt/render/project/src/bin/google-chrome
-      export PATH=/opt/render/project/src/bin/google-chrome:$PATH
-      export CHROME_BINARY="/opt/render/project/src/bin/google-chrome/opt/google/chrome/google-chrome"
 
-      # Verify Google Chrome version
+      # Manually extract the .deb file
+      ar x /opt/render/project/src/bin/google-chrome-stable.deb -C /opt/render/project/src/bin/
+      tar -xvf /opt/render/project/src/bin/data.tar.xz -C /opt/render/project/src/bin/
+
+      # Debug: Check the extracted directory structure
+      echo "Checking extracted Google Chrome structure..."
+      ls -l /opt/render/project/src/bin/
+
+      # Set the Chrome binary path explicitly
+      export CHROME_BINARY="/opt/render/project/src/bin/opt/google/chrome/google-chrome"
+
+      # Verify manually installed Google Chrome version
       echo "Verifying manually installed Google Chrome..."
       $CHROME_BINARY --version || { echo "Google Chrome installation failed."; exit 1; }
 
@@ -35,8 +42,8 @@ services:
 
     startCommand: |
       # Set environment variables explicitly
-      export PATH="/opt/render/project/src/bin/google-chrome:$PATH"
-      export CHROME_BINARY="/opt/render/project/src/bin/google-chrome/opt/google/chrome/google-chrome"
+      export PATH="/opt/render/project/src/bin/opt/google/chrome:$PATH"
+      export CHROME_BINARY="/opt/render/project/src/bin/opt/google/chrome/google-chrome"
 
       # Verify Chrome and ChromeDriver during runtime
       echo "Verifying runtime Chrome and ChromeDriver installation..."
