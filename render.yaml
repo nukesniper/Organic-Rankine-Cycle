@@ -9,19 +9,17 @@ services:
       # Create a writable directory for Chrome and ChromeDriver
       mkdir -p /opt/render/project/src/bin
 
-      # Download and install Google Chrome 114
-      wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /opt/render/project/src/bin/google-chrome-stable.deb
-      dpkg-deb -x /opt/render/project/src/bin/google-chrome-stable.deb /opt/render/project/src/bin/google-chrome
+      # Download portable Google Chrome binary (stable version)
+      wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.tar.gz -O /opt/render/project/src/bin/google-chrome.tar.gz
+      tar -xzf /opt/render/project/src/bin/google-chrome.tar.gz -C /opt/render/project/src/bin/
+      export PATH=/opt/render/project/src/bin/google-chrome:$PATH
+      export CHROME_BINARY="/opt/render/project/src/bin/google-chrome/google-chrome"
 
-      # Ensure the correct Chrome binary is used
-      export CHROME_BINARY="/opt/render/project/src/bin/google-chrome/opt/google/chrome/google-chrome"
-      export PATH="/opt/render/project/src/bin/google-chrome/opt/google/chrome:$PATH"
-
-      # Verify manually installed Google Chrome version
+      # Verify manually downloaded Google Chrome version
       echo "Verifying manually installed Google Chrome..."
       $CHROME_BINARY --version || { echo "Google Chrome installation failed."; exit 1; }
 
-      # Download and install ChromeDriver 114
+      # Download ChromeDriver matching the manually installed Chrome
       CHROMEDRIVER_VERSION="114.0.5735.90"
       wget https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip -O /opt/render/project/src/bin/chromedriver_linux64.zip
       unzip /opt/render/project/src/bin/chromedriver_linux64.zip -d /opt/render/project/src/bin/
@@ -36,8 +34,8 @@ services:
 
     startCommand: |
       # Set environment variables explicitly
-      export CHROME_BINARY="/opt/render/project/src/bin/google-chrome/opt/google/chrome/google-chrome"
-      export PATH="/opt/render/project/src/bin/google-chrome/opt/google/chrome:$PATH"
+      export PATH="/opt/render/project/src/bin/google-chrome:$PATH"
+      export CHROME_BINARY="/opt/render/project/src/bin/google-chrome/google-chrome"
 
       # Verify Chrome and ChromeDriver during runtime
       echo "Verifying runtime Chrome and ChromeDriver installation..."
